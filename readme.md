@@ -3,10 +3,10 @@ expression cannot be used as function. I was getting this error because I put a 
 
 linker couldnt find definition of destructor for GoFishGameClass because i just put the virtual declaration with no definition
 
-added a players vector to the GoFishGame class
-created overloaded findMatch functions
-added removedPlayers list vector to GoFishGame class
-draw card if have empty hand according to gofish rules linked in the lab
+Additions:
+added a players vector to the GoFishGame class so that we could easily print the names of the players to cout.
+created overloaded findMatch functions, which allowed us to compare user input of a card rank to the real card rank.
+added removedPlayers list vector to GoFishGame class, which allowed us to let the game function properly when players were removed.
 
 Trials:
 
