@@ -96,11 +96,6 @@ int HoldEmGame::play()
             CardSet<Suit, pokerRank> localHand(hands.at(i));
             CardSet<Suit, pokerRank> localHand2(board);
 
-            std::vector<Card<Suit, pokerRank>> CardSet<Suit, pokerRank>::*memberCards = CardSet<Suit, pokerRank>::access_cards();
-
-            std::vector<Card<Suit, pokerRank>> cards = localHand.*memberCards;
-            std::vector<Card<Suit, pokerRank>> cards2 = localHand2.*memberCards;
-
             localHand >> hand;
             localHand >> hand;
 
@@ -226,84 +221,99 @@ HoldEmHandRank HoldEmGame::holdem_hand_evaluation(const CardSet<Suit, pokerRank>
     int const HAND_SIZE = 5;
     CardSet<Suit, pokerRank> localHand(hand);
 
-    std::vector<Card<Suit, pokerRank>> CardSet<Suit, pokerRank>::*memberCards = CardSet<Suit, pokerRank>::access_cards();
+    // std::vector<Card<Suit, pokerRank>> CardSet<Suit, pokerRank>::*memberCards = CardSet<Suit, pokerRank>::access_cards();
 
-    std::vector<Card<Suit, pokerRank>> cards = localHand.*memberCards;
+    // std::vector<Card<Suit, pokerRank>> cards = localHand.*memberCards;
+    localHand.sort();
 
-    std::sort(cards.begin(), cards.end(), compare_2<Suit, pokerRank>);
-    std::sort(cards.begin(), cards.end(), compare_1<Suit, pokerRank>);
+    auto begin = localHand.getBeginIterator();
+    auto end = localHand.getEndIterator();
+    auto card4 = (*(begin + 4)).rank;
+    auto card3 = (*(begin + 3)).rank;
+    auto card2 = (*(begin + 2)).rank;
+    auto card1 = (*(begin + 1)).rank;
+    auto card0 = (*(begin)).rank;
+
+    int size = 0;
+
+    auto copy = begin;
+
+    while (copy != end)
+    {
+        size++;
+        copy++;
+    }
 
     // check for undefined
-    if (cards.size() != HAND_SIZE)
+    if (size != HAND_SIZE)
     {
         return HoldEmHandRank::undefined;
     }
 
     // check for straighflush
 
-    if (checkForStraight(cards, firstTieBreaker) && checkForFlush(cards))
+    if (checkForStraight(begin, end, firstTieBreaker) && checkForFlush(begin, end))
     {
         return HoldEmHandRank::straightflush;
     }
 
     // check for four of a kind
-    if (findXofaKind(cards, 4, firstTieBreaker, secondTieBreaker, thirdTieBreaker, fourthTieBreaker))
+    if (findXofaKind(begin, end, 4, firstTieBreaker, secondTieBreaker, thirdTieBreaker, fourthTieBreaker))
     {
         return HoldEmHandRank::fourofakind;
     }
 
     // check for fullhouse
-    if (checkForFullHouse(cards, firstTieBreaker))
+    if (checkForFullHouse(begin, firstTieBreaker))
     {
         return HoldEmHandRank::fullhouse;
     }
 
     // check for flush
-    if (checkForFlush(cards))
+    if (checkForFlush(begin, end))
     {
-        firstTieBreaker = cards.at(4).rank;
-        secondTieBreaker = cards.at(3).rank;
-        thirdTieBreaker = cards.at(2).rank;
-        fourthTieBreaker = cards.at(1).rank;
-        fifthTieBreaker = cards.at(0).rank;
+        firstTieBreaker = card4;
+        secondTieBreaker = card3;
+        thirdTieBreaker = card2;
+        fourthTieBreaker = card1;
+        fifthTieBreaker = card0;
 
         return HoldEmHandRank::flush;
     }
 
     // check for straight
-    if (checkForStraight(cards, firstTieBreaker))
+    if (checkForStraight(begin, end, firstTieBreaker))
     {
         return HoldEmHandRank::straight;
     }
 
     // check for threeofakind
-    if (findXofaKind(cards, 3, firstTieBreaker, secondTieBreaker, thirdTieBreaker, fourthTieBreaker))
+    if (findXofaKind(begin, end, 3, firstTieBreaker, secondTieBreaker, thirdTieBreaker, fourthTieBreaker))
     {
         return HoldEmHandRank::threeofakind;
     }
     // check for two pair
 
-    if (((cards.at(0).rank == cards.at(1).rank) && (cards.at(2).rank == cards.at(3).rank)) || ((cards.at(0).rank == cards.at(1).rank) && (cards.at(3).rank == cards.at(4).rank)) || ((cards.at(1).rank == cards.at(2).rank) && (cards.at(3).rank == cards.at(4).rank)))
+    if ((card0 == card1 && (card2 == card3)) || ((card0 == card1) && (card3 == card4)) || ((card1 == card2 && (card3 == card4))))
     {
+        pokerRank highPair = card3;
 
-        pokerRank highPair = cards.at(3).rank;
-
-        pokerRank lowPair = cards.at(1).rank;
+        pokerRank lowPair = card1;
         pokerRank nonPair;
 
-        if (cards.at(4).rank != cards.at(3).rank)
+        if (card4 != card3)
         {
-            nonPair = cards.at(4).rank;
+            nonPair = card4;
         }
         else
         {
-            if (cards.at(1).rank == cards.at(2).rank)
+            if (card1 == card2)
             {
-                nonPair = cards.at(0).rank;
+                nonPair = card0;
             }
             else
             {
-                nonPair = cards.at(2).rank;
+                nonPair = card2;
             }
         }
 
@@ -315,23 +325,23 @@ HoldEmHandRank HoldEmGame::holdem_hand_evaluation(const CardSet<Suit, pokerRank>
     }
 
     // check for pair
-    if (findXofaKind(cards, 2, firstTieBreaker, secondTieBreaker, thirdTieBreaker, fourthTieBreaker))
+    if (findXofaKind(begin, end, 2, firstTieBreaker, secondTieBreaker, thirdTieBreaker, fourthTieBreaker))
     {
         return HoldEmHandRank::pair;
     }
 
-    firstTieBreaker = cards.at(4).rank;
-    secondTieBreaker = cards.at(3).rank;
-    thirdTieBreaker = cards.at(2).rank;
-    fourthTieBreaker = cards.at(1).rank;
-    fifthTieBreaker = cards.at(0).rank;
+    firstTieBreaker = (*(begin + 4)).rank;
+    secondTieBreaker = (*(begin + 3)).rank;
+    thirdTieBreaker = (*(begin + 2)).rank;
+    fourthTieBreaker = (*(begin + 1)).rank;
+    fifthTieBreaker = (*(begin)).rank;
 
     return HoldEmHandRank::xhigh;
 }
-
+/*
 // only called when findXofaKind's counter is 2
 // check if the type of hand is a three of a kind or two pairs
-bool checkFor3Kind(std::vector<Card<Suit, pokerRank>> &hand)
+bool checkFor3Kind(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end)
 {
     // case 1
     if (hand.at(0).rank == hand.at(1).rank && hand.at(2).rank == hand.at(1).rank)
@@ -353,23 +363,24 @@ bool checkFor3Kind(std::vector<Card<Suit, pokerRank>> &hand)
     // if we have reached here, then no three pair was found, so it must be two pairs
     return false;
 }
+*/
 
-bool checkForFullHouse(std::vector<Card<Suit, pokerRank>> &cards, pokerRank &firstTieBreaker)
+bool checkForFullHouse(std::vector<Card<Suit, pokerRank>>::iterator begin, pokerRank &firstTieBreaker)
 {
 
     // two cases: first three same and last two same
     // or first two same and last three same
 
-    if ((cards.at(0).rank == cards.at(1).rank) && (cards.at(1).rank == cards.at(2).rank) && (cards.at(3).rank == cards.at(4).rank))
+    if (((*begin).rank == (*(begin + 1)).rank) && (*(begin + 1)).rank == ((*(begin + 2))).rank && (*(begin + 3)).rank == (*(begin + 4)).rank)
     {
-        firstTieBreaker = cards.at(0).rank;
+        firstTieBreaker = (*begin).rank;
 
         return true;
     }
 
-    if ((cards.at(2).rank == cards.at(3).rank) && (cards.at(3).rank == cards.at(4).rank) && (cards.at(0).rank == cards.at(1).rank))
+    if ((((*(begin + 2))).rank == (*(begin + 3)).rank) && ((*(begin + 3)).rank == (*(begin + 4)).rank) && ((*(begin)).rank == (*(begin + 1)).rank))
     {
-        firstTieBreaker = cards.at(4).rank;
+        firstTieBreaker = (*(begin + 4)).rank;
 
         return true;
     }
@@ -377,19 +388,19 @@ bool checkForFullHouse(std::vector<Card<Suit, pokerRank>> &cards, pokerRank &fir
     return false;
 }
 
-bool checkForStraight(std::vector<Card<Suit, pokerRank>> &hand, pokerRank &firstTieBreaker)
+bool checkForStraight(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, pokerRank &firstTieBreaker)
 {
 
-    pokerRank starting = hand.at(0).rank;
+    pokerRank starting = (*begin).rank;
 
     if (starting >= pokerRank::jack)
     {
         return false;
     }
 
-    std::vector<Card<Suit, pokerRank>>::iterator next = ++hand.begin();
+    std::vector<Card<Suit, pokerRank>>::iterator next = begin + 1;
 
-    for (std::vector<Card<Suit, pokerRank>>::iterator it = hand.begin(); it != --hand.end(); it++)
+    for (std::vector<Card<Suit, pokerRank>>::iterator it = begin; it != end - 1; it++)
     {
         if ((*next).rank != static_cast<pokerRank>((static_cast<int>((*it).rank)) + 1))
         {
@@ -402,22 +413,22 @@ bool checkForStraight(std::vector<Card<Suit, pokerRank>> &hand, pokerRank &first
 
     return true;
 }
-bool checkForFlush(std::vector<Card<Suit, pokerRank>> &hand)
+bool checkForFlush(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end)
 {
-    Suit first = hand.at(0).suit;
+    Suit first = (*begin).suit;
 
-    return (std::count_if(hand.begin() + 1, hand.end(), [&first](Card<Suit, pokerRank> card)
+    return (std::count_if(begin + 1, end, [&first](Card<Suit, pokerRank> card)
                           { return card.suit == first; }) == 4);
 }
-bool findXofaKind(std::vector<Card<Suit, pokerRank>> &hand, int x, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker, pokerRank &fourthTieBreaker)
+bool findXofaKind(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, int x, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker, pokerRank &fourthTieBreaker)
 {
 
-    std::vector<Card<Suit, pokerRank>>::iterator pnt1 = hand.begin();
-    std::vector<Card<Suit, pokerRank>>::iterator pnt2 = ++hand.begin();
+    std::vector<Card<Suit, pokerRank>>::iterator pnt1 = begin;
+    std::vector<Card<Suit, pokerRank>>::iterator pnt2 = begin + 1;
 
     int counter = 0;
 
-    while (pnt2 != hand.end() && counter < (x - 1))
+    while (pnt2 != end && counter < (x - 1))
     {
 
         if ((*pnt1).rank != (*pnt2).rank)
@@ -449,11 +460,11 @@ bool findXofaKind(std::vector<Card<Suit, pokerRank>> &hand, int x, pokerRank &fi
         {
 
             pokerRank pairValue;
-            std::vector<Card<Suit, pokerRank>>::iterator it = hand.begin();
-            std::vector<Card<Suit, pokerRank>>::iterator next = ++hand.begin();
+            std::vector<Card<Suit, pokerRank>>::iterator it = begin;
+            std::vector<Card<Suit, pokerRank>>::iterator next = begin + 1;
 
             // find pair rank first
-            for (; it != --hand.end(); it++)
+            for (; it != end - 1; it++)
             {
                 if ((*it).rank == (*next).rank)
                 {
@@ -464,15 +475,15 @@ bool findXofaKind(std::vector<Card<Suit, pokerRank>> &hand, int x, pokerRank &fi
             }
 
             // set next highest card tiebreakers
-            auto rt = hand.rbegin();
+            auto rt = end;
 
             std::vector<pokerRank> tieBreakValues;
 
-            for (; rt != hand.rend(); ++rt)
+            for (; rt != begin - 1; --rt)
             {
                 if ((*rt).rank == pairValue)
                 {
-                    ++rt;
+                    --rt;
                 }
                 else
                 {
@@ -488,14 +499,14 @@ bool findXofaKind(std::vector<Card<Suit, pokerRank>> &hand, int x, pokerRank &fi
         if (counter == THREE_OF_A_KIND_VALUE)
         {
 
-            pokerRank threeOfAKindRank = hand.at(2).rank;
+            pokerRank threeOfAKindRank = (*(begin + 2)).rank;
 
             firstTieBreaker = threeOfAKindRank;
         }
 
         if (counter == FOUR_OF_A_KIND_VALUE)
         {
-            firstTieBreaker = hand.at(3).rank;
+            firstTieBreaker = (*(begin + 3)).rank;
         }
 
         return true;

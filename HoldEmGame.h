@@ -70,8 +70,8 @@ private:
 std::ostream &operator<<(std::ostream &, const HoldEmHandRank &);
 bool operator<(const HoldEmGame::values::hold &x, const HoldEmGame::values::hold &y);
 
-bool findXofaKind(std::vector<Card<Suit, pokerRank>> &hand, int x, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker, pokerRank &fourthTieBreaker);
-bool checkForStraight(std::vector<Card<Suit, pokerRank>> &hand, pokerRank &firstTieBreaker);
-bool checkForFlush(std::vector<Card<Suit, pokerRank>> &hand);
-bool checkForTwoPair(std::vector<Card<Suit, pokerRank>> &cards, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker);
-bool checkForFullHouse(std::vector<Card<Suit, pokerRank>> &cards, pokerRank &firstTieBreaker);
+bool findXofaKind(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, int x, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker, pokerRank &fourthTieBreaker);
+bool checkForStraight(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, pokerRank &firstTieBreaker);
+bool checkForFlush(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end);
+bool checkForTwoPair(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker);
+bool checkForFullHouse(std::vector<Card<Suit, pokerRank>>::iterator begin, pokerRank &firstTieBreaker);

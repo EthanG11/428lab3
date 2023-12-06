@@ -124,14 +124,16 @@ void PinochleGame::printPlayersCurrentHands()
     }
 }
 
-void checkEightAndFourMelds(std::vector<Card<Suit, pinRank>> &cards, pinRank card, std::vector<PinochleMelds> &vec)
+void checkEightAndFourMelds(std::vector<Card<Suit, pinRank>>::iterator begin, std::vector<Card<Suit, pinRank>>::iterator end, pinRank card, std::vector<PinochleMelds> &vec)
 {
     // check for 8
     int counter = 0;
     int const EIGHT_CARDS = 8;
 
-    auto it = cards.begin();
-    auto end = cards.end();
+    auto it = begin;
+
+    // auto it = cards.begin();
+    // auto end = cards.end();
 
     // need to find first occurence of card and THEN start counting from there
 
@@ -167,12 +169,12 @@ void checkEightAndFourMelds(std::vector<Card<Suit, pinRank>> &cards, pinRank car
     }
     else
     {
-        it = cards.begin();
+        // may need to
 
-        if (std::find(it, end, Card<Suit, pinRank>(Suit::clubs, card)) != end &&
-            std::find(it, end, Card<Suit, pinRank>(Suit::diamonds, card)) != end &&
-            std::find(it, end, Card<Suit, pinRank>(Suit::hearts, card)) != end &&
-            std::find(it, end, Card<Suit, pinRank>(Suit::spades, card)) != end)
+        if (std::find(begin, end, Card<Suit, pinRank>(Suit::clubs, card)) != end &&
+            std::find(begin, end, Card<Suit, pinRank>(Suit::diamonds, card)) != end &&
+            std::find(begin, end, Card<Suit, pinRank>(Suit::hearts, card)) != end &&
+            std::find(begin, end, Card<Suit, pinRank>(Suit::spades, card)) != end)
         {
             if (card == pinRank::ace)
             {
@@ -199,37 +201,42 @@ void PinochleGame::suit_independent_evaluation(const CardSet<Suit, pinRank> &han
 
     CardSet<Suit, pinRank> localHand(hand);
 
-    std::vector<Card<Suit, pinRank>> CardSet<Suit, pinRank>::*memberCards = CardSet<Suit, pinRank>::access_cards();
+    // std::vector<Card<Suit, pinRank>> CardSet<Suit, pinRank>::*memberCards = CardSet<Suit, pinRank>::access_cards();
+    localHand.sort();
 
-    std::vector<Card<Suit, pinRank>> cards = localHand.*memberCards;
+    auto begin = localHand.getBeginIterator();
+    auto end = localHand.getEndIterator();
 
-    std::sort(cards.begin(), cards.end(), compare_2<Suit, pinRank>);
-    std::sort(cards.begin(), cards.end(), compare_1<Suit, pinRank>);
+    auto begin1 = localHand.getBeginIterator();
+    auto end1 = localHand.getEndIterator();
 
-    checkEightAndFourMelds(cards, pinRank::ace, vec);
-    checkEightAndFourMelds(cards, pinRank::king, vec);
-    checkEightAndFourMelds(cards, pinRank::queen, vec);
-    checkEightAndFourMelds(cards, pinRank::jack, vec);
+    // std::vector<Card<Suit, pinRank>> cards = localHand.*memberCards;
+
+    checkEightAndFourMelds(begin, end, pinRank::ace, vec);
+    checkEightAndFourMelds(begin, end, pinRank::king, vec);
+    checkEightAndFourMelds(begin, end, pinRank::queen, vec);
+    checkEightAndFourMelds(begin, end, pinRank::jack, vec);
 
     Card<Suit, pinRank> jackDiamond(Suit::diamonds, pinRank::jack);
     Card<Suit, pinRank> queenSpade(Suit::spades, pinRank::queen);
 
+    // return first iterator of jackDiamond
     auto jackTest = std::find_if(
-        cards.begin(), cards.end(), [jackDiamond, queenSpade](Card<Suit, pinRank> current)
+        begin1, end1, [jackDiamond](Card<Suit, pinRank> current)
         { return current == jackDiamond; });
 
+    // return first iterator of queenSpade
     auto queenTest = std::find_if(
-        cards.begin(), cards.end(), [jackDiamond, queenSpade](Card<Suit, pinRank> current)
+        begin1, end1, [queenSpade](Card<Suit, pinRank> current)
         { return current == queenSpade; });
 
     // have a pinochle
-    if (jackTest != cards.end() && queenTest != cards.end())
+    if (jackTest != end1 && queenTest != end1)
     {
 
         // test for doublepinochle
         if (*(++jackTest) == jackDiamond && *(++queenTest) == queenSpade)
         {
-
             vec.push_back(PinochleMelds::doublepinochle);
         }
         else

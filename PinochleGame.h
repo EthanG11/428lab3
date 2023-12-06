@@ -54,4 +54,4 @@ private:
 };
 
 // check hand for melds
-void checkEightAndFourMelds(std::vector<Card<Suit, pinRank>> &cards, pinRank card, std::vector<PinochleMelds> &vec);
+void checkEightAndFourMelds(std::vector<Card<Suit, pinRank>>::iterator begin, std::vector<Card<Suit, pinRank>>::iterator end, pinRank card, std::vector<PinochleMelds> &vec);

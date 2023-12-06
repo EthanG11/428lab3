@@ -85,6 +85,7 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "hashtable": "cpp",
-    "bit": "cpp"
+    "bit": "cpp",
+    "variant": "cpp"
   }
 }

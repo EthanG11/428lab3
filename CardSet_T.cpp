@@ -44,7 +44,8 @@ CardSet<Suit, Rank> &CardSet<Suit, Rank>::operator>>(CardSet<Suit, Rank> &set)
     }
 
     Card<Suit, Rank> lastCard = Card(this->cards.back().suit, this->cards.back().rank);
-    // pushes equivalent last card
+    // pushes equivalent last card            hands.at(playerNumber).collect(deck);
+
     set.cards.push_back(lastCard);
 
     this->cards.pop_back();
@@ -63,9 +64,63 @@ bool CardSet<Suit, Rank>::is_empty()
     return false;
 }
 
-// return a ref to cards vector to allow singular violation of encapsulation
 template <typename Suit, typename Rank>
-std::vector<Card<Suit, Rank>> CardSet<Suit, Rank>::*CardSet<Suit, Rank>::access_cards()
+typename std::vector<Card<Suit, Rank>>::iterator CardSet<Suit, Rank>::getBeginIterator()
 {
-    return &CardSet<Suit, Rank>::cards;
+    return cards.begin();
+}
+
+template <typename Suit, typename Rank>
+
+typename std::vector<Card<Suit, Rank>>::iterator CardSet<Suit, Rank>::getEndIterator()
+{
+    return cards.end();
+}
+
+template <typename Suit, typename Rank>
+void CardSet<Suit, Rank>::sort()
+{
+    std::sort(getBeginIterator(), getEndIterator(), compare_2<Suit, Rank>);
+    std::sort(getBeginIterator(), getEndIterator(), compare_1<Suit, Rank>);
+}
+
+// shift all of the cards out of the CardSet and into the Deck
+template <typename Suit, typename Rank>
+void CardSet<Suit, Rank>::collect(CardSet<Suit, Rank> &set)
+{
+    std::move<iter, std::back_insert_iterator<typename std::vector<Card<Suit, Rank>>>>(set.getBeginIterator(), set.getEndIterator(), std::back_inserter<typename std::vector<Card<Suit, Rank>>>(cards));
+}
+
+template <typename Suit, typename Rank>
+void CardSet<Suit, Rank>::collect_if(CardSet<Suit, Rank> &deck, std::function<bool(Card<Suit, Rank> &)> pred)
+{
+
+    std::copy_if<iter, std::back_insert_iterator<typename std::vector<Card<Suit, Rank>>>, std::function<bool(Card<Suit, Rank> &)>>(deck.getBeginIterator(), deck.getEndIterator(), std::back_inserter<typename std::vector<Card<Suit, Rank>>>(cards), pred);
+
+    auto startOfUndefinedIter = std::remove_if<iter, std::function<bool(Card<Suit, Rank> &)>>(deck.getBeginIterator(), deck.getEndIterator(), pred);
+
+    deck.cards.erase(startOfUndefinedIter, deck.getEndIterator());
+}
+
+template <typename Suit, typename Rank>
+bool CardSet<Suit, Rank>::request(CardSet<Suit, Rank> &cardSet, rank_type &rank)
+{
+    if (cardSet.is_empty())
+    {
+        return false;
+    }
+    auto it = std::find_if(cardSet.getBeginIterator(), cardSet.getEndIterator(), [rank](Card<Suit, Rank> current)
+                           { return current.rank == rank; });
+
+    if (it == cardSet.getEndIterator())
+    {
+        return false;
+    }
+
+    // TODO figure out how to create pred for card==rank
+
+    collect_if(cardSet, [rank](Card<Suit, Rank> card)
+               { return (rank == card.rank); });
+
+    return true;
 }

@@ -1,6 +1,92 @@
 #include "PinochleGame.h"
+void suit_independent_evaluation(const CardSet<Suit, pinRank> &hand, std::vector<PinochleMelds> &vec)
+{
+
+    CardSet<Suit, pinRank> localHand(hand);
+
+    // std::vector<Card<Suit, pinRank>> CardSet<Suit, pinRank>::*memberCards = CardSet<Suit, pinRank>::access_cards();
+    localHand.sort();
+    std::cout << "sorted" << std::endl;
+    localHand.print(std::cout, 12);
+    auto begin = localHand.getBeginIterator();
+    auto end = localHand.getEndIterator();
+
+    auto begin1 = localHand.getBeginIterator();
+    auto end1 = localHand.getEndIterator();
+
+    // std::vector<Card<Suit, pinRank>> cards = localHand.*memberCards;
+
+    checkEightAndFourMelds(begin, end, pinRank::ace, vec);
+    checkEightAndFourMelds(begin, end, pinRank::king, vec);
+    checkEightAndFourMelds(begin, end, pinRank::queen, vec);
+    checkEightAndFourMelds(begin, end, pinRank::jack, vec);
+
+    Card<Suit, pinRank> jackDiamond(Suit::diamonds, pinRank::jack);
+    Card<Suit, pinRank> queenSpade(Suit::spades, pinRank::queen);
+
+    // return first iterator of jackDiamond
+    auto jackTest = std::find_if(
+        begin1, end1, [jackDiamond](Card<Suit, pinRank> current)
+        { return current == jackDiamond; });
+
+    // return first iterator of queenSpade
+    auto queenTest = std::find_if(
+        begin1, end1, [queenSpade](Card<Suit, pinRank> current)
+        { return current == queenSpade; });
+
+    // have a pinochle
+    if (jackTest != end1 && queenTest != end1)
+    {
+
+        std::cout << "HERE" << std::endl;
+        // test for doublepinochle
+        if (*(++jackTest) == jackDiamond && *(++queenTest) == queenSpade)
+        {
+            vec.push_back(PinochleMelds::doublepinochle);
+        }
+        else
+        {
+            vec.push_back(PinochleMelds::pinochle);
+        }
+    }
+};
+
 int main()
 {
+
+    CardSet<Suit, pinRank> doublepin;
+
+    Card<Suit, pinRank> aceSpades(Suit::spades, pinRank::ace);
+    Card<Suit, pinRank> aceHearts(Suit::hearts, pinRank::ace);
+    Card<Suit, pinRank> aceDiamonds(Suit::diamonds, pinRank::ace);
+    Card<Suit, pinRank> aceClubs(Suit::clubs, pinRank::ace);
+
+    Card<Suit, pinRank> jackDiamond(Suit::diamonds, pinRank::jack);
+    Card<Suit, pinRank> queenSpade(Suit::spades, pinRank::queen);
+
+    doublepin << aceSpades;
+
+    doublepin.push_back(aceSpades);
+    doublepin.push_back(aceSpades);
+    doublepin.push_back(queenSpade);
+
+    doublepin.push_back(aceSpades);
+    doublepin.push_back(aceSpades);
+    doublepin.push_back(jackDiamond);
+
+    doublepin.push_back(aceSpades);
+    doublepin.push_back(aceSpades);
+    doublepin.push_back(aceSpades);
+    doublepin.push_back(jackDiamond);
+
+    doublepin.push_back(aceSpades);
+    doublepin.push_back(queenSpade);
+
+    std::vector<PinochleMelds> vec;
+
+    suit_independent_evaluation(doublepin, vec);
+
+    /*
     std::vector<Card<Suit, pinRank>> fourAcesCards;
 
     Card<Suit, pinRank> kingSpades(Suit::spades, pinRank::king);
@@ -67,4 +153,5 @@ int main()
         std::cout << "FAIL";
     }
     return 0;
+    */
 }

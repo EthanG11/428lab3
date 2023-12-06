@@ -82,7 +82,7 @@ pokerRank operator++(pokerRank &prank)
 	return prank;
 }
 
-// initialize a pinochle deck by adding one card of each rank from each suit
+// initialize a poker deck by adding one card of each rank from each suit
 pokerDeck::pokerDeck()
 {
 
