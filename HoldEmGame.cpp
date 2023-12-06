@@ -124,7 +124,7 @@ int HoldEmGame::play()
             vec.push_back(x);
         }
 
-        std::sort(vec.begin(), vec.end());
+        std::sort(vec.rbegin(), vec.rend());
 
         for (auto it = vec.begin(); it != vec.end(); it++)
         {
@@ -221,9 +221,6 @@ HoldEmHandRank HoldEmGame::holdem_hand_evaluation(const CardSet<Suit, pokerRank>
     int const HAND_SIZE = 5;
     CardSet<Suit, pokerRank> localHand(hand);
 
-    // std::vector<Card<Suit, pokerRank>> CardSet<Suit, pokerRank>::*memberCards = CardSet<Suit, pokerRank>::access_cards();
-
-    // std::vector<Card<Suit, pokerRank>> cards = localHand.*memberCards;
     localHand.sort();
 
     auto begin = localHand.getBeginIterator();
