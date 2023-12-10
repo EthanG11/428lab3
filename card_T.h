@@ -16,17 +16,17 @@ struct Card
 	R rank;
 	Card(){};
 	Card(S s, R r) : suit(s), rank(r){};
-	bool operator==(const Card<S, R>) const;
+	bool operator==(const Card<S, R>) const; //to compare a card via ==, compare the card's rank and suit
 };
 
 template <typename S, typename R>
 std::ostream &operator<<(std::ostream &write, const Card<S, R> &card); // print card's suit and rank
 
 template <typename S, typename R>
-bool compare_1(const Card<S, R> &card1, const Card<S, R> &card2);
+bool compare_1(const Card<S, R> &card1, const Card<S, R> &card2); //compare by rank
 
 template <typename S, typename R>
-bool compare_2(const Card<S, R> &card1, const Card<S, R> &card2);
+bool compare_2(const Card<S, R> &card1, const Card<S, R> &card2); //compare by suit
 
 #ifdef TEMPLATE_HEADERS_INCLUDE_SOURCE
 #include "card_T.cpp"

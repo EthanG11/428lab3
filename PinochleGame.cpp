@@ -1,6 +1,6 @@
 // Sarah Wilkinson,  s.z.wilkinson@wustl.edu
 // Ethan Gray, ethan.gray@wustl.edu
-// This file contains the implementations for the PinochleGame class's member functions.
+// This file contains the implementations for the PinochleGame class's member functions, as well as functions necessary for checking win states of a pinochle game.
 
 #include "PinochleGame.h"
 
@@ -124,6 +124,7 @@ void PinochleGame::printPlayersCurrentHands()
     }
 }
 
+//check for meld types of eight and meld types of four
 void checkEightAndFourMelds(std::vector<Card<Suit, pinRank>>::iterator begin, std::vector<Card<Suit, pinRank>>::iterator end, pinRank card, std::vector<PinochleMelds> &vec)
 {
     // check for 8
@@ -196,6 +197,7 @@ void checkEightAndFourMelds(std::vector<Card<Suit, pinRank>>::iterator begin, st
     }
 };
 
+//initiate checks for melds in a game of pinochle. call the appropriate testing function to check for melds of type 8 and 4, and then perform manual checking for other meld types.
 void PinochleGame::suit_independent_evaluation(const CardSet<Suit, pinRank> &hand, std::vector<PinochleMelds> &vec)
 {
 

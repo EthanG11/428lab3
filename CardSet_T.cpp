@@ -1,7 +1,7 @@
 // Sarah Wilkinson,  s.z.wilkinson@wustl.edu
 // Ethan Gray, ethan.gray@wustl.edu
 // This file contains the implementations for the member functions of the CardSet_T template class.
-// print(), operator>>(), is_empty(), and access_cards()
+// print(), operator>>(), is_empty(), sort(), collect(), collect_if(), and request()
 
 #include "CardSet_T.h"
 
@@ -64,12 +64,14 @@ bool CardSet<Suit, Rank>::is_empty()
     return false;
 }
 
+//get beginning iterator for cards
 template <typename Suit, typename Rank>
 typename std::vector<Card<Suit, Rank>>::iterator CardSet<Suit, Rank>::getBeginIterator()
 {
     return cards.begin();
 }
 
+//get end iterator for cards
 template <typename Suit, typename Rank>
 
 typename std::vector<Card<Suit, Rank>>::iterator CardSet<Suit, Rank>::getEndIterator()
@@ -77,6 +79,7 @@ typename std::vector<Card<Suit, Rank>>::iterator CardSet<Suit, Rank>::getEndIter
     return cards.end();
 }
 
+//call std::sort by rank and by suit
 template <typename Suit, typename Rank>
 void CardSet<Suit, Rank>::sort()
 {
@@ -91,17 +94,21 @@ void CardSet<Suit, Rank>::collect(CardSet<Suit, Rank> &set)
     std::move<iter, std::back_insert_iterator<typename std::vector<Card<Suit, Rank>>>>(set.getBeginIterator(), set.getEndIterator(), std::back_inserter<typename std::vector<Card<Suit, Rank>>>(cards));
 }
 
+//collect only cards that meet a given criteria
 template <typename Suit, typename Rank>
 void CardSet<Suit, Rank>::collect_if(CardSet<Suit, Rank> &deck, std::function<bool(Card<Suit, Rank> &)> pred)
 {
-
+    //copy any cards that match the predicate from the passed CardSet to the one on which collect_if was called
     std::copy_if<iter, std::back_insert_iterator<typename std::vector<Card<Suit, Rank>>>, std::function<bool(Card<Suit, Rank> &)>>(deck.getBeginIterator(), deck.getEndIterator(), std::back_inserter<typename std::vector<Card<Suit, Rank>>>(cards), pred);
 
+    //remove those cards (which we just copied) from CardSet on which collect_if was called
     auto startOfUndefinedIter = std::remove_if<iter, std::function<bool(Card<Suit, Rank> &)>>(deck.getBeginIterator(), deck.getEndIterator(), pred);
 
     deck.cards.erase(startOfUndefinedIter, deck.getEndIterator());
 }
 
+//find a card in the provided CardSet matching the provided rank
+//if no card, return false. If card found, move card from provided CardSet to CardSet on which this function was called and return true.
 template <typename Suit, typename Rank>
 bool CardSet<Suit, Rank>::request(CardSet<Suit, Rank> &cardSet, rank_type &rank)
 {
@@ -109,6 +116,7 @@ bool CardSet<Suit, Rank>::request(CardSet<Suit, Rank> &cardSet, rank_type &rank)
     {
         return false;
     }
+
     auto it = std::find_if(cardSet.getBeginIterator(), cardSet.getEndIterator(), [rank](Card<Suit, Rank> current)
                            { return current.rank == rank; });
 

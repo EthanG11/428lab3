@@ -11,10 +11,175 @@ added removedPlayers list vector to GoFishGame class, which allowed us to let th
 Trials:
 
 1. HoldEm Deck
+bash-4.2$ ./lab3 GoFish HoldEm p1 p2
+HoldEm
+Rank: 2
+NUM: 4
+Rank: 3
+NUM: 4
+Rank: 4
+NUM: 4
+Rank: 5
+NUM: 4
+Rank: 6
+NUM: 4
+Rank: 7
+NUM: 4
+Rank: 8
+NUM: 4
+Rank: 9
+NUM: 4
+Rank: 10
+NUM: 4
+Rank: J
+NUM: 4
+Rank: Q
+NUM: 4
+Rank: K
+NUM: 4
+Rank: A
+NUM: 4
+PLAYER: p1
+7 D  3 H  7 C  8 S  K D  4 S  A S
+Books:
+PLAYER: p2
+7 H  2 D  K S  6 C  4 H  7 S  Q D
+Books:
+TURN OF player: p1
+What card rank and what player number? enter as rank number SPACE player number
+seven 1
+PLAYER: p1
+3 H  8 S  K D  4 S  A S
+Books: 7 D  7 C  7 H  7 S
+
+PLAYER: p2
+2 D  K S  6 C  4 H  Q D
+Books:
+TURN OF player: p1
+What card rank and what player number? enter as rank number SPACE player number
+three 1
+Go fish
+PLAYER: p1
+3 H  8 S  K D  4 S  A S  9 S
+Books: 7 D  7 C  7 H  7 S
+
+PLAYER: p2
+2 D  K S  6 C  4 H  Q D
+Books:
+TURN OF player: p2
+What card rank and what player number? enter as rank number SPACE player number
+
+C^
 
 2. Uno Deck
+bash-4.2$ ./lab3 GoFish Uno p1 p2
+Uno
+Rank: zero
+NUM: 4
+Rank: one
+NUM: 8
+Rank: two
+NUM: 8
+Rank: three
+NUM: 8
+Rank: four
+NUM: 8
+Rank: five
+NUM: 8
+Rank: six
+NUM: 8
+Rank: seven
+NUM: 8
+Rank: eight
+NUM: 8
+Rank: nine
+NUM: 8
+Rank: skip
+NUM: 8
+Rank: reverse
+NUM: 8
+Rank: draw two
+NUM: 8
+Rank: draw four
+NUM: 4
+Rank: wild
+NUM: 4
+Rank: blank
+NUM: 4
+PLAYER: p1
+nineyellow sevenyellow threegreen eightyellow skipyellow ninegreen threered
+Books:
+PLAYER: p2
+nineblue draw twored fourred reversered reversered onered fourblue
+Books:
+TURN OF player: p1
+What card rank and what player number? enter as rank number SPACE player number
+nine 1
+PLAYER: p1
+nineyellow sevenyellow threegreen eightyellow skipyellow ninegreen threered nineblue
+Books:
+PLAYER: p2
+draw twored fourred reversered reversered onered fourblue
+Books:
+TURN OF player: p1
+What card rank and what player number? enter as rank number SPACE player number
+seven 1
+Go fish
+PLAYER: p1
+nineyellow sevenyellow threegreen eightyellow skipyellow ninegreen threered nineblue zerored
+Books:
+PLAYER: p2
+draw twored fourred reversered reversered onered fourblue
+Books:
+TURN OF player: p2
+What card rank and what player number? enter as rank number SPACE player number
+
+C^
 
 3. Pinochle Deck
+bash-4.2$ ./lab3 GoFish Pinochle p1 p2
+Pinochle
+Rank: 9
+NUM: 8
+Rank: J
+NUM: 8
+Rank: Q
+NUM: 8
+Rank: K
+NUM: 8
+Rank: 10
+NUM: 8
+Rank: A
+NUM: 8
+PLAYER: p1
+J C  10 C  A S  A C  J D  J H  K D
+Books:
+PLAYER: p2
+Q C  J C  9 H  J H  A H  Q C  K C
+Books:
+TURN OF player: p1
+What card rank and what player number? enter as rank number SPACE player number
+jack 1
+PLAYER: p1
+10 C  A S  A C  K D
+Books: J C  J D  J H  J C
+J H
+PLAYER: p2
+Q C  9 H  A H  Q C  K C
+Books:
+TURN OF player: p1
+What card rank and what player number? enter as rank number SPACE player number
+ten 1
+Go fish
+PLAYER: p1
+10 C  A S  A C  K D  A H
+Books: J C  J D  J H  J C
+J H
+PLAYER: p2
+Q C  9 H  A H  Q C  K C
+Books:
+
+C^
 
 4. make a book and repeat turn
    PLAYER: a

@@ -1,5 +1,10 @@
+// Sarah Wilkinson,  s.z.wilkinson@wustl.edu
+// Ethan Gray, ethan.gray@wustl.edu
+// This file contains the function definitions for the UnoDeck class, as well as << and ++ overloads for uno rank and color enum types.
+
 #include "Uno.h"
 
+//initialize an uno deck by assembling the proper uno deck
 UnoDeck::UnoDeck()
 {
     // populate rank zeroes
@@ -11,7 +16,7 @@ UnoDeck::UnoDeck()
         ++color;
     }
 
-    // popluate one through drawtwo
+    // poplate one through drawtwo
     Color color = Color::red;
     while (color != Color::black)
     {
@@ -42,6 +47,7 @@ UnoDeck::UnoDeck()
     }
 }
 
+// print correct descriptive string for cards of rank type uno.
 std::ostream &operator<<(std::ostream &o, UnoRank &rank)
 {
     switch (rank)
@@ -100,6 +106,8 @@ std::ostream &operator<<(std::ostream &o, UnoRank &rank)
     }
     return o;
 }
+
+// increment rank according to uno rank rules.  If it is already the highest rank, then increment it into undefined.
 UnoRank operator++(UnoRank &rank)
 {
     rank = (rank == UnoRank::undefined) ? rank : (UnoRank)((int)rank + 1);
@@ -133,6 +141,7 @@ std::ostream &operator<<(std::ostream &o, Color &color)
     return o;
 }
 
+// increment rank according to uno color rules.  If it is already the highest color, then increment it into undefined.
 Color operator++(Color &color)
 {
 

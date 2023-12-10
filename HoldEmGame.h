@@ -67,9 +67,10 @@ private:
     HoldEmHandRank holdem_hand_evaluation(const CardSet<Suit, pokerRank> &hand, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker, pokerRank &fourthTieBreaker, pokerRank &fifthTieBreaker);
 };
 
-std::ostream &operator<<(std::ostream &, const HoldEmHandRank &);
-bool operator<(const HoldEmGame::values::hold &x, const HoldEmGame::values::hold &y);
+std::ostream &operator<<(std::ostream &, const HoldEmHandRank &); //print hand rank string
+bool operator<(const HoldEmGame::values::hold &x, const HoldEmGame::values::hold &y); //check tiebreakers
 
+//functions to check for hand rank
 bool findXofaKind(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, int x, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker, pokerRank &fourthTieBreaker);
 bool checkForStraight(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, pokerRank &firstTieBreaker);
 bool checkForFlush(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end);

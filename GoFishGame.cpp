@@ -1,3 +1,8 @@
+// Sarah Wilkinson,  s.z.wilkinson@wustl.edu
+// Ethan Gray, ethan.gray@wustl.edu
+// This file contains the definitions for the GoFishGame class.
+// This includes definitions for member functions collect_books(), turn(), deal(), and play()
+
 #include "GoFishGame.h"
 #include <unordered_map>
 #include "Uno.h"
@@ -5,6 +10,9 @@
 #include <type_traits>
 #include <variant>
 
+//method to control the go fish game
+//add as many hands are there are players
+//then check that there are at least 4 cards of each rank in the deck. if not, throw exception.
 template <typename Suit, typename Rank, typename Deck>
 
 GoFishGame<Suit, Rank, Deck>::GoFishGame(int numPlayers, const char *playerNames[]) : Game(numPlayers, playerNames), numPlayers(numPlayers)
@@ -45,6 +53,7 @@ GoFishGame<Suit, Rank, Deck>::GoFishGame(int numPlayers, const char *playerNames
     }
 }
 
+//template specialization of GoFishGame for Uno cards
 template <>
 GoFishGame<Color, UnoRank, UnoDeck>::GoFishGame(int numPlayers, const char *playerNames[]) : Game(numPlayers, playerNames), numPlayers(numPlayers)
 {
@@ -83,6 +92,7 @@ GoFishGame<Color, UnoRank, UnoDeck>::GoFishGame(int numPlayers, const char *play
     }
 }
 
+//template specialization of GoFishGame for pinochle cards
 template <>
 GoFishGame<Suit, pinRank, pinochleDeck>::GoFishGame(int numPlayers, const char *playerNames[]) : Game(numPlayers, playerNames), numPlayers(numPlayers)
 {
@@ -119,6 +129,8 @@ GoFishGame<Suit, pinRank, pinochleDeck>::GoFishGame(int numPlayers, const char *
         rank = static_cast<pinRank>(static_cast<int>(rank) + 1);
     }
 }
+
+//template specialization of GoFishGame for poker cards
 template <>
 GoFishGame<Suit, pokerRank, pokerDeck>::GoFishGame(int numPlayers, const char *playerNames[]) : Game(numPlayers, playerNames), numPlayers(numPlayers)
 {
@@ -159,6 +171,9 @@ GoFishGame<Suit, pokerRank, pokerDeck>::GoFishGame(int numPlayers, const char *p
     }
 }
 
+//given a player number, check if there is a 4-of-a-kind in that player's hand, and return a boolean value to indicate whether or not 4 cards of the same rank were found in it.
+//if 4-of-a-kind, call collect_if() to move cards of appropriate rank from hand to CardSet of books player has made and return true
+//else return false
 template <typename Suit, typename Rank, typename Deck>
 bool GoFishGame<Suit, Rank, Deck>::collect_books(int playerNumber)
 
@@ -182,6 +197,7 @@ bool GoFishGame<Suit, Rank, Deck>::collect_books(int playerNumber)
     return false;
 }
 
+//map the ranks of a given rank type to a corresponding descriptive string
 std::unordered_map<std::string, UnoRank> unoPairings = {{"zero", UnoRank::zero},
                                                         {"one", UnoRank::one},
                                                         {"two", UnoRank::two},
@@ -219,6 +235,9 @@ std::unordered_map<std::string, pinRank> pinPairings = {{"nine", pinRank::nine},
                                                         {"king", pinRank::king},
                                                         {"ace", pinRank::ace}};
 
+//next three functions are function to match a given rank with its corresponding descriptive string in the above unordered maps
+
+//function overload for unorank
 bool findMatch(UnoRank &rank, std::string rankString)
 {
     std::unordered_map<std::string, UnoRank>::iterator it = unoPairings.find(rankString);
@@ -230,6 +249,7 @@ bool findMatch(UnoRank &rank, std::string rankString)
     }
     return false;
 }
+//function overload for pinRank
 bool findMatch(pinRank &rank, std::string rankString)
 {
 
@@ -243,6 +263,7 @@ bool findMatch(pinRank &rank, std::string rankString)
     return false;
 }
 
+//function overload for pokerRank
 bool findMatch(pokerRank &rank, std::string rankString)
 {
     std::unordered_map<std::string, pokerRank>::iterator it = pokerPairings.find(rankString);
@@ -256,6 +277,13 @@ bool findMatch(pokerRank &rank, std::string rankString)
     return false;
 }
 
+//given number of players, return a boolean value to indicate whether it still remains that player's turn.
+//print out the players hands and books and then prompt the user to indicate what card rank to ask for and what player to ask for it from
+//repeat until user provides a valid card rank (which must be the rank of a card in the player's hand) and player number (which must be the number of a player in the game).
+//then use request() to try to obtain a card of that rank from the targeted player
+//if successful, repeatedly call the collect_books method for the player whose turn it is until the collect_books returns false; and then return true.
+//If unsuccessful, "go fish" by drawing a card from the deck into the hand of the player whose turn it is. 
+//If deck is empty, move all of current player's cards into deck and remove current player; then return false.
 template <typename Suit, typename Rank, typename Deck>
 bool GoFishGame<Suit, Rank, Deck>::turn(int playerNumber)
 {
@@ -390,6 +418,8 @@ bool GoFishGame<Suit, Rank, Deck>::turn(int playerNumber)
     }
 }
 
+// Shuffle the deck and deal each player 1 card at a time until each player has received the proper number of cards.
+// If there are only two players in the game, each player should receive seven cards, or if there are more than two players in the game, each player should receive five cards.
 template <typename Suit, typename Rank, typename Deck>
 void GoFishGame<Suit, Rank, Deck>::deal()
 {
@@ -426,6 +456,11 @@ void GoFishGame<Suit, Rank, Deck>::deal()
     }
 }
 
+// Start by calling deal and then for each player number repeatedly call the collect_books method with that player number until it returns false. 
+// Then, repeatedly iterate over all players that remain in the game, in multiple rounds until the game ends. 
+// In each round, for each player in succession, repeatedly call the turn method for the (same) current player until it returns false and then advance to the next player.
+// The game is over when all cards have moved from the deck and the players' hands into the players' collections of books, or when there is one or zero players left in the game. 
+// Once the game has finished, it should say which player (or players) has made the most books.
 template <typename Suit, typename Rank, typename Deck>
 int GoFishGame<Suit, Rank, Deck>::play()
 {

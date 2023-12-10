@@ -1,7 +1,7 @@
 // Sarah Wilkinson,  s.z.wilkinson@wustl.edu
 // Ethan Gray, ethan.gray@wustl.edu
-// This file contains the declaration of the Game class, which both the Poker and Pinochle games inherit.
-// It sets up general functions required for both games.
+// This file contains the declaration of the Game class, which all games--Poker, Pinochle, GoFish, and Uno--inherit.
+// It sets up general functions required for all games.
 
 #pragma once
 #include <vector>

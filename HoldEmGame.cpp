@@ -172,6 +172,7 @@ void HoldEmGame::printPlayersCurrentHands()
     }
 }
 
+// output appropriate string to describe hand rank
 std::ostream &operator<<(std::ostream &stream, const HoldEmHandRank &rank)
 {
 
@@ -216,6 +217,7 @@ std::ostream &operator<<(std::ostream &stream, const HoldEmHandRank &rank)
     return stream;
 }
 
+// initiate checks for all hand rank types. call appropriate function to check and return corresponding hand rank enum.
 HoldEmHandRank HoldEmGame::holdem_hand_evaluation(const CardSet<Suit, pokerRank> &hand, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker, pokerRank &fourthTieBreaker, pokerRank &fifthTieBreaker)
 {
     int const HAND_SIZE = 5;
@@ -362,6 +364,7 @@ bool checkFor3Kind(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vect
 }
 */
 
+//return true if hand contains hand rank type full house
 bool checkForFullHouse(std::vector<Card<Suit, pokerRank>>::iterator begin, pokerRank &firstTieBreaker)
 {
 
@@ -385,6 +388,7 @@ bool checkForFullHouse(std::vector<Card<Suit, pokerRank>>::iterator begin, poker
     return false;
 }
 
+//return true if hand contains hand rank type straight
 bool checkForStraight(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, pokerRank &firstTieBreaker)
 {
 
@@ -410,6 +414,8 @@ bool checkForStraight(std::vector<Card<Suit, pokerRank>>::iterator begin, std::v
 
     return true;
 }
+
+//check if hand contains hand rank type flush
 bool checkForFlush(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end)
 {
     Suit first = (*begin).suit;
@@ -417,6 +423,8 @@ bool checkForFlush(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vect
     return (std::count_if(begin + 1, end, [&first](Card<Suit, pokerRank> card)
                           { return card.suit == first; }) == 4);
 }
+
+//check for pair, three of kind, and four of kind.
 bool findXofaKind(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vector<Card<Suit, pokerRank>>::iterator end, int x, pokerRank &firstTieBreaker, pokerRank &secondTieBreaker, pokerRank &thirdTieBreaker, pokerRank &fourthTieBreaker)
 {
 
@@ -511,6 +519,7 @@ bool findXofaKind(std::vector<Card<Suit, pokerRank>>::iterator begin, std::vecto
     return false;
 }
 
+// overloaded < to compare nested hold struct, which is inside values struct, which is inside the HoldEmGame class
 bool operator<(const HoldEmGame::values::hold &x, const HoldEmGame::values::hold &y)
 {
 
