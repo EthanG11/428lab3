@@ -1,3 +1,6 @@
+Names: Ethan Gray and Sarah Wilkinson
+emails: ethan.gray@wustl.edu and s.z.wilkinson@wustl.edu
+
 ERRORS:
 expression cannot be used as function. I was getting this error because I put a value into the std::find_if function instead of a unary predicate
 
