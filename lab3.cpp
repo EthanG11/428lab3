@@ -58,7 +58,6 @@ shared_ptr<Game> create(int argc, const char *argv[])
         num_players = argc - 3;
 
         string decktype = argv[DECK_TYPE];
-        cout << decktype << endl;
         try
         {
 
